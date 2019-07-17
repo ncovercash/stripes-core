@@ -1,5 +1,30 @@
 # Change history for stripes-core
 
+## [3.7.0] (in progress)
+
+* Pass locale to Moment.js so weekdays, etc. are translated. (STCOM-512)
+* Allow home-page welcome message to be customised by setting `config.welcomeMessage` to the name of a translation tag.
+
+## [3.6.0](https://github.com/folio-org/stripes-core/tree/v3.6.0) (2019-06-07)
+[Full Changelog](https://github.com/folio-org/stripes-core/compare/v3.5.1...v3.6.0)
+
+* Allow modules to be ingested by stripes-core as more than one type -- the `type` property of the `stripes` section is now replaced by `actsAs` which can be a module type string or an array of them. Also removes redundant copies of the icons, Okapi interfaces, and permissions in the `modules.<type>` structure exposed by the `ModulesContext` as they are kept elsewhere. (STCOR-148)
+* New settings icon.
+* Provide `setCurrency` on the stripes object, à la `setLocale` and `setTimezone`. Refs UIU-1040.
+
+## [3.5.1](https://github.com/folio-org/stripes-core/tree/v3.5.1) (2019-05-13)
+[Full Changelog](https://github.com/folio-org/stripes-core/compare/v3.5.0...v3.5.1)
+
+* Remove special-case build rules for ui-notes. Its plugin functionality will be included in a separate module.
+* Updated settings icon (STRIPES-624)
+* Added pane placeholder for settings that renders when no sub-settings has been selected (UX-300)
+
+## [3.5.0](https://github.com/folio-org/stripes-core/tree/v3.5.0) (2019-05-12)
+[Full Changelog](https://github.com/folio-org/stripes-core/compare/v3.4.0...v3.5.0)
+
+* Dependency updates. STRIPES-611.
+* `<AppIcon>` style tweaks prevent GIGANTIC icons.
+
 ## [3.4.0](https://github.com/folio-org/stripes-core/tree/v3.4.0) (2019-04-25)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v3.3.0...v3.4.0)
 

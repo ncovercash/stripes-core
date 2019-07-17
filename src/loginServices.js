@@ -5,12 +5,14 @@ import { change } from 'redux-form';
 import { addLocaleData } from 'react-intl';
 import { translations } from 'stripes-config';
 import rtlDetect from 'rtl-detect';
+import moment from 'moment';
 
 import {
   clearCurrentUser,
   setCurrentPerms,
   setLocale,
   setTimezone,
+  setCurrency,
   setPlugins,
   setBindings,
   setTranslations,
@@ -47,6 +49,17 @@ export function loadTranslations(store, locale, defaultTranslations = {}) {
   document.documentElement.setAttribute('lang', parentLocale);
   document.documentElement.setAttribute('dir', rtlDetect.getLangDir(locale));
 
+  // Set locale for Moment.js (en is not importable as it is not stored separately)
+  if (parentLocale === 'en') moment.locale(parentLocale);
+  else {
+    import(`moment/locale/${parentLocale}`).then(() => {
+      moment.locale(parentLocale);
+    }).catch(e => {
+      // eslint-disable-next-line no-console
+      console.error(`Error loading locale ${parentLocale} for Moment.js`, e);
+    });
+  }
+
   return import(`react-intl/locale-data/${parentLocale}`)
     .then(intlData => addLocaleData(intlData.default || intlData))
     // fetch the region-specific translations, e.g. pt-BR, if available.
@@ -71,11 +84,12 @@ export function getLocale(okapiUrl, store, tenant) {
         response.json().then((json) => {
           if (json.configs.length) {
             const localeValues = JSON.parse(json.configs[0].value);
-            const { locale, timezone } = localeValues;
+            const { locale, timezone, currency } = localeValues;
             if (locale) {
               loadTranslations(store, locale);
             }
             if (timezone) store.dispatch(setTimezone(timezone));
+            if (currency) store.dispatch(setCurrency(currency));
           }
         });
       }
