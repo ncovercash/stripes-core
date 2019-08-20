@@ -1,9 +1,18 @@
 # Change history for stripes-core
 
-## [3.7.0] (in progress)
+## 3.8.0 (IN PROGRESS)
 
+* Receive React as a peerDependency (provide by `stripes`). One dep to rule them all. Refs UIIN-678.
+* Updated MainNav design to improve color contrast (STCOR-378)
+* Include React a devDependency since it no longer a direct dependency. Refs UIIN-678.
+
+## [3.7.0](https://github.com/folio-org/stripes-core/tree/v3.7.0) (2019-07-22)
+[Full Changelog](https://github.com/folio-org/stripes-core/compare/v3.6.0...v3.7.0)
+
+* Do not filter `okapiInterfaces` from modules' config. (STRIPES-634)
 * Pass locale to Moment.js so weekdays, etc. are translated. (STCOM-512)
 * Allow home-page welcome message to be customised by setting `config.welcomeMessage` to the name of a translation tag.
+* Better password reset workflow. (UIU-1099)
 
 ## [3.6.0](https://github.com/folio-org/stripes-core/tree/v3.6.0) (2019-06-07)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v3.5.1...v3.6.0)
