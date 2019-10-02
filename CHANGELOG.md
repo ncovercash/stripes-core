@@ -1,6 +1,35 @@
 # Change history for stripes-core
 
-## 3.8.0 (IN PROGRESS)
+## [3.10.3](https://github.com/folio-org/stripes-core/tree/v3.10.3) (2019-10-02)
+[Full Changelog](https://github.com/folio-org/stripes-core/compare/v3.10.2...v3.10.3)
+
+* Ineffectually bump `react-router` to help publish a new `latest` release (STCOR-393)
+
+## [3.10.2](https://github.com/folio-org/stripes-core/tree/v3.10.2) (2019-10-02)
+[Full Changelog](https://github.com/folio-org/stripes-core/compare/v3.10.1...v3.10.2)
+
+* No changes
+
+## [3.10.1](https://github.com/folio-org/stripes-core/tree/v3.10.1) (2019-09-27)
+[Full Changelog](https://github.com/folio-org/stripes-core/compare/v3.10.0...v3.10.1)
+
+* Don't overwrite existing token with empty one when returning from SSO. (STCOR-391)
+
+## [3.10.0](https://github.com/folio-org/stripes-core/tree/v3.10.0) (2019-09-25)
+[Full Changelog](https://github.com/folio-org/stripes-core/compare/v3.9.0...v3.10.0)
+
+* stripes-components v5.8.0 and translations updates.
+
+## [3.9.0](https://github.com/folio-org/stripes-core/tree/v3.9.0) (2019-09-09)
+[Full Changelog](https://github.com/folio-org/stripes-core/compare/v3.8.0...v3.9.0)
+
+* Use `stripes.config.js` to configure app name and caption in the UI (STCOR-385)
+* Use `stripes.config.js` to configure page title (STCOR-386)
+* Allow a platform to provide its own `index.html` file.
+* Call `PRUNE` redux reducer when navigating among application to reduce memory consumption (UIIN-687)
+
+## [3.8.0](https://github.com/folio-org/stripes-core/tree/v3.8.0) (2019-08-21)
+[Full Changelog](https://github.com/folio-org/stripes-core/compare/v3.7.0...v3.8.0)
 
 * Receive React as a peerDependency (provide by `stripes`). One dep to rule them all. Refs UIIN-678.
 * Updated MainNav design to improve color contrast (STCOR-378)
