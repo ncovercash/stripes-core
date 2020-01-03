@@ -1,5 +1,15 @@
 # Change history for stripes-core
 
+## 3.12.0 (IN PROGRESS)
+
+## [3.11.1](https://github.com/folio-org/stripes-core/tree/v3.11.1) (2019-12-10)
+[Full Changelog](https://github.com/folio-org/stripes-core/compare/v3.11.0...v3.11.1)
+
+* Correctly dismiss the `Home` dropdown menu after clicking it.
+* Correct label and autocomplete values on login-related forms. Refs STCOM-632
+* Bump `serialize-javascript` to `v2.1.2` to avoid an XSS vulnerability (https://github.com/yahoo/serialize-javascript/security/advisories/GHSA-h9rv-jmmf-4pgx).
+* Restore the current service point label to the profile dropdown button. Fixes STCOR-404.
+
 ## [3.11.0](https://github.com/folio-org/stripes-core/tree/v3.11.0) (2019-12-04)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v3.10.2...v3.10.3)
 
