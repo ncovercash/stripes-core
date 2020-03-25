@@ -88,7 +88,7 @@
     "mainnav.topLevelLabel": "Primário",
     "mainnav.applicationListLabel": "Lista de aplicativos",
     "errors.default.error": "Desculpe, as informações inseridas não correspondem aos nossos registros.",
-    "errors.username.incorrect": "Erro ao verificar a existência do usuário: Nenhum usuário encontrado pelo nome de usuário {username}",
+    "errors.username.incorrect": "Esta conta do FOLIO não pode ser localizada. Entre em contato com o administrador do sistema.",
     "errors.password.incorrect": "Credenciais inválidas",
     "errors.user.blocked": "Por motivos de segurança, sua conta foi bloqueada. Por favor, tente novamente ou entre em contato com o administrador do sistema FOLIO.",
     "errors.password.match.error": "Senha não corresponde. Digite novamente sua senha.",
@@ -121,5 +121,6 @@
     "errors.password.repeatingSymbols.invalid": "A senha não deve conter o mesmo caractere em uma linha.",
     "errors.password.whiteSpace.invalid": "A senha não deve conter espaços em branco.",
     "mainnav.myProfileAriaLabel": "Meu perfil",
-    "mainnav.skipMainNavigation": "Pular navegação principal"
+    "mainnav.skipMainNavigation": "Pular navegação principal",
+    "errors.user.timeout": "Sua sessão expirou. Faça login novamente para retomar sua sessão."
 }

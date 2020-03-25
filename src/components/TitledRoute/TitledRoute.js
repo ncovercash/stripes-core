@@ -11,8 +11,9 @@ import { withStripes } from '../../StripesContext';
 
 class TitledRoute extends React.Component {
   static propTypes = {
-    name: PropTypes.string,
-    component: PropTypes.element
+    component: PropTypes.element,
+    computedMatch: PropTypes.oneOfType([PropTypes.element, PropTypes.object]),
+    name: PropTypes.string
   };
 
   render() {

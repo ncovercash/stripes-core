@@ -1,13 +1,33 @@
 # Change history for stripes-core
 
-## 4.0.0 (IN PROGRESS)
+## [4.1.0](https://github.com/folio-org/stripes-core/tree/v4.1.0) (2020-03-16)
+[Full Changelog](https://github.com/folio-org/stripes-core/compare/v4.0.0...v4.1.0)
 
+* Security update `eslint` to `6.2.1`. Refs STCOR-412.
+* Support `stripes.optionalOkapiInterfaces`. Refs OKAPI-509.
+* Correctly configure react-hot-loader.
+
+## [4.0.0](https://github.com/folio-org/stripes-core/tree/v4.0.0) (2020-03-04)
+[Full Changelog](https://github.com/folio-org/stripes-core/compare/v3.12.0...v4.0.0)
+
+* Gather translations and icons from `stripesDeps` listed in the `stripes` section of package.json. (STCOR-414)
+* Add missing Event class for emulating browser events in tests. Refs UIDEXP-20.
+* Added `CalloutContext` context for rendering cross-route/component callouts.
+* Added workflow for auth token expiration to force users to log back in, returning to their previous activity. Refs STCOR-37.
+
+## [3.12.0](https://github.com/folio-org/stripes-core/tree/v3.12.0) (2020-03-03)
+[Full Changelog](https://github.com/folio-org/stripes-core/compare/v3.11.2...v3.12.0)
+
+* Upgrade babel to v7.x. Refs STCOR-381.
 * Update Mirage library. Part of STCOR-407.
 * Adjust Route propTypes to accept lazy loaded components. Refs STCOR-408.
 * Link `Change password` in `ProfileDropdown` shows up depending user's permissions. Refs STCOR-409.
 * Increase test coverage to 80% in `<SSOLogin>` component. Refs STCOR-376.
+
+## [3.11.2](https://github.com/folio-org/stripes-core/tree/v3.11.2) (2020-02-20)
+[Full Changelog](https://github.com/folio-org/stripes-core/compare/v3.11.1...v3.11.2)
+
 * Add missing Event class for emulating browser events in tests. Refs UIDEXP-20.
-* Added `CalloutContext` context for rendering cross-route/component callouts.
 
 ## [3.11.1](https://github.com/folio-org/stripes-core/tree/v3.11.1) (2019-12-10)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v3.11.0...v3.11.1)
