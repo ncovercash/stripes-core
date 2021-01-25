@@ -10,9 +10,6 @@
   "publishConfig": {
     "registry": "https://repository.folio.org/repository/npm-folio/"
   },
-  "bin": {
-    "stripescore": "./stripes.js"
-  },
   "scripts": {
     "start": "stripes serve",
     "clean": "rimraf static",
@@ -80,7 +77,6 @@
     "lodash": "^4.17.11",
     "miragejs": "^0.1.32",
     "moment-timezone": "^0.5.14",
-    "node-object-hash": "^1.2.0",
     "prop-types": "^15.5.10",
     "query-string": "^5.0.0",
     "react-cookie": "^2.1.4",
@@ -93,6 +89,7 @@
     "redux-form": "^8.3.0",
     "redux-logger": "^3.0.6",
     "redux-observable": "^0.15.0",
+    "rimraf": "^2.5.4",
     "redux-thunk": "^2.1.0",
     "rxjs": "^5.5.0",
     "rxjs-compat": "^6.5.4"
