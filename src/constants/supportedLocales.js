@@ -1,0 +1,31 @@
+// export supported locales, i.e. the languages we provide translations for
+export const supportedLocales = [
+  'ar',
+  'zh-CN',
+  'zh-TW',
+  'da-DK',
+  'en-GB',
+  'en-SE',
+  'en-US',
+  'fr-FR',
+  'de-DE',
+  'he',
+  'hi-IN',
+  'hu-HU',
+  'ja',
+  'ko',
+  'it-IT',
+  'nb',
+  'nn',
+  'pl',
+  'pt-BR',
+  'pt-PT',
+  'ru',
+  'es',
+  'es-419',
+  'es-ES',
+  'sv',
+  'ur',
+];
+
+export default supportedLocales;

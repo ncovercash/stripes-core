@@ -1,9 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { modules } from 'stripes-config';
 import { withStripes } from './StripesContext';
+import { useModules } from './ModulesContext';
 
 const Pluggable = (props) => {
+  const modules = useModules();
+
   const plugins = modules.plugin || [];
   let best;
 

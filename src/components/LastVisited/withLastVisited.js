@@ -6,7 +6,7 @@ import hoistNonReactStatics from 'hoist-non-react-statics';
 
 import { withModules } from '../Modules';
 import LastVisitedContext from './LastVisitedContext';
-import { packageName } from '../../constants';
+import packageName from '../../constants/packageName';
 
 function withLastVisited(WrappedComponent) {
   class LastVisited extends React.Component {

@@ -1,7 +1,7 @@
-import _ from 'lodash';
+import { every } from 'lodash';
 import PropTypes from 'prop-types';
-import { isVersionCompatible } from './discoverServices';
 
+import { isVersionCompatible } from './utils';
 
 export const stripesShape = PropTypes.shape({
   // Properties provided by the class
@@ -99,7 +99,7 @@ class Stripes {
       return undefined;
     }
 
-    const ok = _.every(perm.split(','), p => !!this.user.perms[p]);
+    const ok = every(perm.split(','), p => !!this.user.perms[p]);
     logger.log('perm', `checking perm '${perm}': `, ok);
     return ok;
   }

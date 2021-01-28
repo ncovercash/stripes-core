@@ -1,7 +1,5 @@
 import React, { useContext } from 'react';
-import { modules } from 'stripes-config';
 
-export const ModulesContext = React.createContext(modules);
+export const ModulesContext = React.createContext();
 export default ModulesContext;
 export const useModules = () => useContext(ModulesContext);
-export { modules as originalModules };
