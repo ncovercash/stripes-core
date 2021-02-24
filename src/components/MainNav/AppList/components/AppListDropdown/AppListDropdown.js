@@ -5,11 +5,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import sortBy from 'lodash/sortBy';
-import classnames from 'classnames';
 
 import NavListItem from '@folio/stripes-components/lib/NavListItem';
 import NavListSection from '@folio/stripes-components/lib/NavListSection';
-import NavListItemStyles from '@folio/stripes-components/lib/NavListItem/NavListItem.css';
 
 import AppIcon from '../../../../AppIcon';
 import css from '../../AppList.css';
@@ -37,7 +35,7 @@ const AppListDropdown = ({ toggleDropdown, apps, listRef, selectedApp }) => (
           role="button"
         >
           <AppIcon
-            app={app.name}
+            app={app.module}
             size="small"
             icon={app.iconData}
           />

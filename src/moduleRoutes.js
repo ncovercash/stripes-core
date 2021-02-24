@@ -2,13 +2,13 @@ import React from 'react';
 import { Route } from 'react-router-dom';
 
 import { connectFor } from '@folio/stripes-connect';
-import ErrorBoundary from '@folio/stripes-components/lib/ErrorBoundary';
 
-import ModulesContext from './ModulesContext';
+import { ModulesContext } from './ModulesContext';
 import { StripesContext } from './StripesContext';
 import AddContext from './AddContext';
 import TitleManager from './components/TitleManager';
-import { getHandlerComponents } from './handlerService';
+import RouteErrorBoundary from './components/RouteErrorBoundary';
+import { getEventHandlers } from './handlerService';
 import { packageName } from './constants';
 import events from './events';
 
@@ -44,7 +44,9 @@ function getModuleRoutes(stripes) {
               key={module.route}
               render={props => {
                 const data = { displayName, name };
-                const components = getHandlerComponents(events.SELECT_MODULE, moduleStripes, modules.handler, data);
+
+                // allow SELECT_MODULE handlers to intervene
+                const components = getEventHandlers(events.SELECT_MODULE, moduleStripes, modules.handler, data);
                 if (components.length) {
                   return components.map(HandlerComponent => (<HandlerComponent stripes={stripes} data={data} />));
                 }
@@ -53,11 +55,15 @@ function getModuleRoutes(stripes) {
                   <StripesContext.Provider value={moduleStripes}>
                     <AddContext context={{ stripes: moduleStripes }}>
                       <div id={`${name}-module-display`} data-module={module.module} data-version={module.version}>
-                        <ErrorBoundary>
+                        <RouteErrorBoundary
+                          escapeRoute={module.home}
+                          moduleName={displayName}
+                          stripes={moduleStripes}
+                        >
                           <TitleManager page={displayName}>
                             <Current {...props} connect={connect} stripes={moduleStripes} actAs="app" />
                           </TitleManager>
-                        </ErrorBoundary>
+                        </RouteErrorBoundary>
                       </div>
                     </AddContext>
                   </StripesContext.Provider>);

@@ -48,29 +48,32 @@ import processBadResponse from './processBadResponse';
 
 // export supported locales, i.e. the languages we provide translations for
 export const supportedLocales = [
-  'ar',
-  'zh-CN',
-  'zh-TW',
-  'da-DK',
-  'en-GB',
-  'en-SE',
-  'en-US',
-  'fr-FR',
-  'de-DE',
-  'he',
-  'hi-IN',
-  'hu-HU',
-  'ja',
-  'ko',
-  'it-IT',
-  'pl',
-  'pt-BR',
-  'pt-PT',
-  'ru',
-  'es',
-  'es-419',
-  'es-ES',
-  'ur',
+  'ar',     // arabic
+  'zh-CN',  // chinese, china
+  'zh-TW',  // chinese, taiwan
+  'da-DK',  // danish, denmark
+  'en-GB',  // british english
+  'en-SE',  // english, sweden
+  'en-US',  // american english
+  'fr-FR',  // french, france
+  'de-DE',  // german, germany
+  'he',     // hebrew
+  'hi-IN',  // hindi, india
+  'hu-HU',  // hugarian, hungry
+  'ja',     // japanese
+  'ko',     // korean
+  'it-IT',  // italian, italy
+  'nb',     // norwegian bokmål"
+  'nn',     // norwegian nynorsk
+  'pl',     // polish
+  'pt-BR',  // portuguese, brazil
+  'pt-PT',  // portuguese, portugal
+  'ru',     // russian
+  'es',     // spanish
+  'es-419', // latin american spanish
+  'es-ES',  // european spanish
+  'sv',     // swedish
+  'ur',     // urdu
 ];
 
 function getHeaders(tenant, token) {
@@ -81,6 +84,16 @@ function getHeaders(tenant, token) {
   };
 }
 
+/**
+ * loadTranslations
+ * return a promise that fetches translations for the given locale and then
+ * dispatches the locale and translations.
+ * @param {} store
+ * @param {*} locale
+ * @param {*} defaultTranslations
+ *
+ * @return Promise
+ */
 export function loadTranslations(store, locale, defaultTranslations = {}) {
   const parentLocale = locale.split('-')[0];
 
@@ -117,8 +130,18 @@ export function loadTranslations(store, locale, defaultTranslations = {}) {
     });
 }
 
+/**
+ * getLocale
+ * return a promise that retrieves the tenant's locale-settings then
+ * loads the translations and dispatches the timezone and currency.
+ * @param {*} okapiUrl
+ * @param {*} store
+ * @param {*} tenant
+ *
+ * @return Promise
+ */
 export function getLocale(okapiUrl, store, tenant) {
-  fetch(`${okapiUrl}/configurations/entries?query=(module=ORG and configName=localeSettings)`,
+  return fetch(`${okapiUrl}/configurations/entries?query=(module==ORG and configName==localeSettings)`,
     { headers: getHeaders(tenant, store.getState().okapi.token) })
     .then((response) => {
       if (response.status === 200) {
@@ -134,11 +157,21 @@ export function getLocale(okapiUrl, store, tenant) {
           }
         });
       }
+      return response;
     });
 }
 
+/**
+ * getPlugins
+ * return a promise that retrieves the tenant's plugins and dispatches them.
+ * @param {} okapiUrl
+ * @param {*} store
+ * @param {*} tenant
+ *
+ * return Promise
+ */
 export function getPlugins(okapiUrl, store, tenant) {
-  fetch(`${okapiUrl}/configurations/entries?query=(module=PLUGINS)`,
+  return fetch(`${okapiUrl}/configurations/entries?query=(module==PLUGINS)`,
     { headers: getHeaders(tenant, store.getState().okapi.token) })
     .then((response) => {
       if (response.status < 400) {
@@ -150,11 +183,19 @@ export function getPlugins(okapiUrl, store, tenant) {
           store.dispatch(setPlugins(configs));
         });
       }
+      return response;
     });
 }
 
+/**
+ * getBindings
+ * return a promise that retrieves the tenant's key-bindings and dispatches them
+ * @param {} okapiUrl
+ * @param {*} store
+ * @param {*} tenant
+ */
 export function getBindings(okapiUrl, store, tenant) {
-  fetch(`${okapiUrl}/configurations/entries?query=(module=ORG and configName=bindings)`,
+  return fetch(`${okapiUrl}/configurations/entries?query=(module==ORG and configName==bindings)`,
     { headers: getHeaders(tenant, store.getState().okapi.token) })
     .then((response) => {
       let bindings = {};
@@ -176,17 +217,52 @@ export function getBindings(okapiUrl, store, tenant) {
           store.dispatch(setBindings(bindings));
         });
       }
-      store.dispatch(setOkapiReady());
+      return response;
     });
 }
 
+/**
+ * loadResources
+ * return a promise that retrieves the tenants locale, plugins, and key-bindings.
+ * @param {} okapiUrl
+ * @param {*} store
+ * @param {*} tenant
+ *
+ * @return Promise
+ */
 function loadResources(okapiUrl, store, tenant) {
-  getLocale(okapiUrl, store, tenant);
-  getPlugins(okapiUrl, store, tenant);
-  getBindings(okapiUrl, store, tenant);
-  if (!store.getState().okapi.withoutOkapi) discoverServices(store);
+  const promises = [
+    getLocale(okapiUrl, store, tenant),
+    getPlugins(okapiUrl, store, tenant),
+    getBindings(okapiUrl, store, tenant),
+  ];
+
+  if (!store.getState().okapi.withoutOkapi) {
+    promises.push(discoverServices(store));
+  }
+
+  return Promise.all(promises);
 }
 
+/**
+ * createOkapiSession
+ * Remap the given data into a session object shaped like:
+ * {
+ *   user: { id, username, personal, servicePoints, curServicePoint }
+ *   perms: { permNameA: true, permNameB: true, ... }
+ *   token: token
+ * }
+ * Dispatch the session object, then return a Promise that fetches
+ * and dispatches tenant resources.
+ *
+ * @param {*} okapiUrl
+ * @param {*} store
+ * @param {*} tenant
+ * @param {*} token
+ * @param {*} data
+ *
+ * @return Promise
+ */
 function createOkapiSession(okapiUrl, store, tenant, token, data) {
   const servicePoints = _.get(data, ['servicePointsUser', 'servicePoints'], []);
   const curSpId = _.get(data, ['servicePointsUser', 'defaultServicePointId']);
@@ -204,8 +280,8 @@ function createOkapiSession(okapiUrl, store, tenant, token, data) {
 
   store.dispatch(setAuthError(null));
 
-  // You are not expected to understand this
-  // ...then aren't you expected to explain it?
+  // remap data's array of permission-names to set with
+  // permission-names for keys and `true` for values
   const perms = Object.assign({}, ...data.permissions.permissions.map(p => ({ [p.permissionName]: true })));
   store.dispatch(setCurrentPerms(perms));
   const okapiSess = {
@@ -216,29 +292,50 @@ function createOkapiSession(okapiUrl, store, tenant, token, data) {
   localforage.setItem('okapiSess', okapiSess);
   store.dispatch(setSessionData(okapiSess));
 
-  loadResources(okapiUrl, store, tenant);
+  return loadResources(okapiUrl, store, tenant);
 }
 
-// Validate stored token by attempting to fetch /bl-users/_self
+/**
+ * validateUser
+ * return a promise that fetches from bl-users/self.
+ * if successful, dispatch the result to create a session
+ * if not, clear the session and token.
+ *
+ * @param {} okapiUrl
+ * @param {*} store
+ * @param {*} tenant
+ * @param {*} session
+ *
+ * @return Promise
+ */
 function validateUser(okapiUrl, store, tenant, session) {
-  fetch(`${okapiUrl}/bl-users/_self`, { headers: getHeaders(tenant, session.token) }).then((resp) => {
+  return fetch(`${okapiUrl}/bl-users/_self`, { headers: getHeaders(tenant, session.token) }).then((resp) => {
     if (resp.status >= 400) {
       store.dispatch(clearCurrentUser());
       store.dispatch(clearOkapiToken());
-      store.dispatch(setOkapiReady());
       localforage.removeItem('okapiSess');
+      return null;
     } else {
       const { token, user, perms } = session;
       store.dispatch(setSessionData({ token, user, perms }));
-      loadResources(okapiUrl, store, tenant);
+      return loadResources(okapiUrl, store, tenant);
     }
   }).catch(() => {
     store.dispatch(setServerDown());
   });
 }
 
-function isSSOEnabled(okapiUrl, store, tenant) {
-  fetch(`${okapiUrl}/saml/check`, { headers: { 'X-Okapi-Tenant': tenant, 'Accept': 'application/json' } })
+/**
+ * getSSOEnabled
+ * return a promise that fetches from /saml/check and dispatches checkSSO.
+ * @param {*} okapiUrl
+ * @param {*} store
+ * @param {*} tenant
+ *
+ * @return Promise
+ */
+function getSSOEnabled(okapiUrl, store, tenant) {
+  return fetch(`${okapiUrl}/saml/check`, { headers: { 'X-Okapi-Tenant': tenant, 'Accept': 'application/json' } })
     .then((response) => {
       if (response.status >= 400) {
         store.dispatch(checkSSO(false));
@@ -247,14 +344,19 @@ function isSSOEnabled(okapiUrl, store, tenant) {
           store.dispatch(checkSSO(json.active));
         });
       }
-      store.dispatch(setOkapiReady());
     })
     .catch(() => {
       store.dispatch(checkSSO(false));
-      store.dispatch(setOkapiReady());
     });
 }
 
+/**
+ * processSSOLoginResponse
+ * handle the return from SSO:
+ * for a POST binding, populate a form and submit it
+ * for a GET binding, navigate to the requested location
+ * @param {*} resp
+ */
 function processSSOLoginResponse(resp) {
   if (resp.status < 400) {
     resp.json().then((json) => {
@@ -289,6 +391,16 @@ function handleLoginError(dispatch, resp) {
   dispatch(setOkapiReady());
 }
 
+/**
+ * processOkapiSession
+ * create a new okapi session with the response from either a username/password
+ * authentication request or a bl-users/_self request.
+ * @param {*} okapiUrl
+ * @param {*} store
+ * @param {*} tenant
+ * @param {*} resp
+ * @param {*} ssoToken
+ */
 function processOkapiSession(okapiUrl, store, tenant, resp, ssoToken) {
   const token = resp.headers.get('X-Okapi-Token') || ssoToken;
   const { dispatch } = store;
@@ -296,21 +408,47 @@ function processOkapiSession(okapiUrl, store, tenant, resp, ssoToken) {
   if (resp.status >= 400) {
     handleLoginError(dispatch, resp);
   } else {
-    resp.json().then(json => createOkapiSession(okapiUrl, store, tenant, token, json));
+    resp.json()
+      .then(json => createOkapiSession(okapiUrl, store, tenant, token, json))
+      .then(() => {
+        store.dispatch(setOkapiReady());
+      });
   }
   return resp;
 }
 
+/**
+ * checkOkapiSession
+ * 1. Pull the session from local storage; if non-empty validate it, dispatching load-resources actions.
+ * 2. Check if SSO (SAML) is enabled, dispatching check-sso actions
+ * 3. dispatch set-okapi-ready.
+ *
+ * @param {*} okapiUrl
+ * @param {*} store
+ * @param {*} tenant
+ */
 export function checkOkapiSession(okapiUrl, store, tenant) {
-  localforage.getItem('okapiSess').then((sess) => {
-    if (sess !== null) {
-      validateUser(okapiUrl, store, tenant, sess);
-    } else {
-      isSSOEnabled(okapiUrl, store, tenant);
-    }
-  });
+  localforage.getItem('okapiSess')
+    .then((sess) => {
+      return sess !== null ? validateUser(okapiUrl, store, tenant, sess) : null;
+    })
+    .then(() => {
+      getSSOEnabled(okapiUrl, store, tenant);
+    })
+    .finally(() => {
+      store.dispatch(setOkapiReady());
+    });
 }
 
+/**
+ * requestLogin
+ * authenticate with a username and password. return a promise that posts the values
+ * and then processes the result to begin a session.
+ * @param {*} okapiUrl
+ * @param {*} store
+ * @param {*} tenant
+ * @param {*} data
+ */
 export function requestLogin(okapiUrl, store, tenant, data) {
   return fetch(`${okapiUrl}/bl-users/login?expandPermissions=true&fullPermissions=true`, {
     method: 'POST',
@@ -320,12 +458,26 @@ export function requestLogin(okapiUrl, store, tenant, data) {
     .then(resp => processOkapiSession(okapiUrl, store, tenant, resp));
 }
 
+/**
+ * requestUserWithPerms
+ * retrieve currently-authenticated user, then process the result to begin a session.
+ * @param {*} okapiUrl
+ * @param {*} store
+ * @param {*} tenant
+ * @param {*} token
+ */
 export function requestUserWithPerms(okapiUrl, store, tenant, token) {
   fetch(`${okapiUrl}/bl-users/_self?expandPermissions=true&fullPermissions=true`,
     { headers: getHeaders(tenant, token) })
     .then(resp => processOkapiSession(okapiUrl, store, tenant, resp, token));
 }
 
+/**
+ * requestSSOLogin
+ * authenticate via SSO/SAML
+ * @param {*} okapiUrl
+ * @param {*} tenant
+ */
 export function requestSSOLogin(okapiUrl, tenant) {
   const stripesUrl = (window.location.origin || `${window.location.protocol}//${window.location.host}`) + window.location.pathname;
 
@@ -337,6 +489,13 @@ export function requestSSOLogin(okapiUrl, tenant) {
     .then(resp => processSSOLoginResponse(resp));
 }
 
+/**
+ * setCurServicePoint
+ * 1. store the given service-point as the current one in locale storage,
+ * 2. dispatch the current service-point
+ * @param {} store
+ * @param {*} servicePoint
+ */
 export function setCurServicePoint(store, servicePoint) {
   localforage.getItem('okapiSess').then((sess) => {
     sess.user.curServicePoint = servicePoint;
@@ -345,6 +504,13 @@ export function setCurServicePoint(store, servicePoint) {
   });
 }
 
+/**
+ * setServicePoints
+ * 1. store the given list in locale storage,
+ * 2. dispatch the list of service-points
+ * @param {} store
+ * @param {*} servicePoint
+ */
 export function setServicePoints(store, servicePoints) {
   localforage.getItem('okapiSess').then((sess) => {
     sess.user.servicePoints = servicePoints;

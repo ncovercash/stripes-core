@@ -5,8 +5,12 @@ import { connect } from 'react-redux';
 import { createBrowserHistory } from 'history';
 import { IntlProvider } from 'react-intl';
 import queryString from 'query-string';
+import { QueryClientProvider } from 'react-query';
+import { SWRConfig } from 'swr';
 import { ApolloProvider } from '@apollo/client';
+
 import ErrorBoundary from '@folio/stripes-components/lib/ErrorBoundary';
+import { Callout } from '@folio/stripes-components';
 import { metadata, icons } from 'stripes-config';
 
 /* ConnectContext - formerly known as RootContext, now comes from stripes-connect, so stripes-connect
@@ -17,12 +21,15 @@ import { ConnectContext } from '@folio/stripes-connect';
 import initialReducers from '../../initialReducers';
 import enhanceReducer from '../../enhanceReducer';
 import createApolloClient from '../../createApolloClient';
+import createReactQueryClient from '../../createReactQueryClient';
+import createSwrOptions from '../../createSwrOptions';
 import { setSinglePlugin, setBindings, setOkapiToken, setTimezone, setCurrency } from '../../okapiActions';
 import { loadTranslations, checkOkapiSession } from '../../loginServices';
 import { getQueryResourceKey, getCurrentModule } from '../../locationService';
 import Stripes from '../../Stripes';
 import RootWithIntl from '../../RootWithIntl';
 import SystemSkeleton from '../SystemSkeleton';
+import CalloutContext from '../../CalloutContext';
 
 import './Root.css';
 
@@ -36,13 +43,35 @@ if (!metadata) {
 class Root extends Component {
   constructor(...args) {
     super(...args);
+
+    const { modules, history, okapi } = this.props;
+
     this.reducers = { ...initialReducers };
     this.epics = {};
-    this.withOkapi = this.props.okapi.withoutOkapi !== true;
+    this.withOkapi = okapi.withoutOkapi !== true;
 
-    const { modules, history } = this.props;
     const appModule = getCurrentModule(modules, history.location);
     this.queryResourceStateKey = (appModule) ? getQueryResourceKey(appModule) : null;
+    this.defaultRichTextElements = {
+      b: (chunks) => <b>{chunks}</b>,
+      i: (chunks) => <i>{chunks}</i>,
+      em: (chunks) => <em>{chunks}</em>,
+      strong: (chunks) => <strong>{chunks}</strong>,
+      span: (chunks) => <span>{chunks}</span>,
+      div: (chunks) => <div>{chunks}</div>,
+      p: (chunks) => <p>{chunks}</p>,
+      ul: (chunks) => <ul>{chunks}</ul>,
+      ol: (chunks) => <ol>{chunks}</ol>,
+      li: (chunks) => <li>{chunks}</li>,
+    };
+
+    this.apolloClient = createApolloClient(okapi);
+    this.reactQueryClient = createReactQueryClient();
+    this.swrOptions = createSwrOptions();
+
+    this.state = {
+      callout: null,
+    };
   }
 
   getChildContext() {
@@ -83,6 +112,12 @@ class Root extends Component {
       return true;
     }
     return false;
+  }
+
+  setCalloutRef = (ref) => {
+    this.setState({
+      callout: ref,
+    });
   }
 
   render() {
@@ -129,23 +164,31 @@ class Root extends Component {
     return (
       <ErrorBoundary>
         <ConnectContext.Provider value={{ addReducer: this.addReducer, addEpic: this.addEpic, store }}>
-          <ApolloProvider client={createApolloClient(okapi)}>
-            <IntlProvider
-              locale={locale}
-              key={locale}
-              timeZone={timezone}
-              currency={currency}
-              messages={translations}
-              textComponent={Fragment}
-              onError={config?.suppressIntlErrors ? () => {} : undefined}
-            >
-              <RootWithIntl
-                stripes={stripes}
-                token={token}
-                disableAuth={disableAuth}
-                history={history}
-              />
-            </IntlProvider>
+          <ApolloProvider client={this.apolloClient}>
+            <QueryClientProvider client={this.reactQueryClient}>
+              <SWRConfig value={this.swrOptions}>
+                <IntlProvider
+                  locale={locale}
+                  key={locale}
+                  timeZone={timezone}
+                  currency={currency}
+                  messages={translations}
+                  textComponent={Fragment}
+                  onError={config?.suppressIntlErrors ? () => {} : undefined}
+                  defaultRichTextElements={this.defaultRichTextElements}
+                >
+                  <CalloutContext.Provider value={this.state.callout}>
+                    <RootWithIntl
+                      stripes={stripes}
+                      token={token}
+                      disableAuth={disableAuth}
+                      history={history}
+                    />
+                  </CalloutContext.Provider>
+                  <Callout ref={this.setCalloutRef} />
+                </IntlProvider>
+              </SWRConfig>
+            </QueryClientProvider>
           </ApolloProvider>
         </ConnectContext.Provider>
       </ErrorBoundary>
@@ -177,7 +220,7 @@ Root.propTypes = {
   currency: PropTypes.string,
   translations: PropTypes.object,
   modules: PropTypes.shape({
-    app: PropTypes.array,
+    app: PropTypes.arrayOf(PropTypes.object),
   }),
   plugins: PropTypes.object,
   bindings: PropTypes.object,

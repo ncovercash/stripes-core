@@ -1,10 +1,33 @@
 # Change history for stripes-core
 
-## 6.1.0 IN PROGRESS
+## 7.0.0 IN PROGRESS
 
 * Validate token using a request that does not require permissions. Refs STCOR-452.
 * Update `serialize-javascript` to avoid CVE-2020-7660. Refs STCOR-467.
 * Pass a string, not a `<FormattedMessage>`, to `<NavButton>`. Refs STCOR-472.
+* Move `CalloutContext` to `<Root>` to avoid issues with Intl. Refs STCOR-481.
+* Test HTTP response cleanup. Refs STCOR-483.
+* Avoid using `<FormattedMessage>` with render-props. Refs STCOR-472, STCOR-482.
+* Add support for building and consuming Webpack DLLs. Refs STCOR-471.
+* Provide default HTML formatters to `<IntlProvider>` so we can avoid `<SafeHTMLMessage>`. Fixes STCOR-477.
+* Settings > Software version > Display a loading indicator when querying for missing/incompatible modules, STCOR-479.
+* Passing in full module name to resolve icon for modules that don't use @folio/ scope prefix. Refs STCOR-490.
+* Append dlls to final output during build. STCOR-492.
+* Avoid retrying of http requests using `useOkapiKy` hook by default. STCOR-500.
+* Expose module context via `useModules`/`withModules`/`withModule`. STCOR-502
+* Add `prefix` prop to TitleManager. STCOR-507
+* Setup `react-query`. Refs STCOR-508
+* Increment `favicons-webpack-plugin` to `v4`. Refs STCOR-510.
+* Remove support for `hardsource-webpack-plugin`. Refs STCOR-421, STCOR-510.
+* Refactor `<SSOLanding>` to avoid context error; upgrade `react-cookie` for the hooks. Refs STCOR-514.
+* Publish `ERROR` events from `<RouteErrorBoundary>` so handler modules can react to them. Refs STCOR-455.
+* Dispatch `setOkapiReady` when all resources are loaded. Fixes STCOR-506.
+* Configure `swr`. Refs STCOR-516.
+* Callouts are opened after page reload. Refs STCOR-518.
+* Use `==` where possible for more efficient queries. Refs STCOR-520.
+* Do not nest authentication forms. Refs STCOR-522.
+* When rehydrating a session from local storage, always dispatch `checkSSO`. Fixes STCOR-514.
+* Increment `lodash` for security reasons. Refs STCOR-519.
 
 ## [6.0.0](https://github.com/folio-org/stripes-core/tree/v6.0.0) (2020-10-06)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v5.0.2...v6.0.0)
@@ -25,6 +48,7 @@
 * Adjust package scope name filter to align with NPM rules instead of assuming `@folio/`. Refs STCOR-456.
 * Move `moment` to `peerDependencies`. Refs STCOR-464.
 * Refactor `CreateResetPassword` to use vanilla `react-final-form` instead of `stripes-final-form` wrapper. Refs STCOR-466.
+* Settings > Software version: Remove references to color. Refs STCOR-451.
 
 ## [5.0.2](https://github.com/folio-org/stripes-core/tree/v5.0.2) (2020-06-12)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v5.0.1...v5.0.2)

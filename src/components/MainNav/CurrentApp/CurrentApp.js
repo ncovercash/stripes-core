@@ -7,6 +7,7 @@ import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
 import Headline from '@folio/stripes-components/lib/Headline';
 import NavButton from '../NavButton';
+import homeIcon from '../../../assets/icons/icon-home.svg';
 import css from './CurrentApp.css';
 
 const propTypes = {
@@ -35,9 +36,13 @@ const CurrentApp = ({ config, currentApp, id, intl, badge }) => {
   const actualCurrentApp = currentApp || {
     displayName: config.platformName || 'FOLIO',
     description: config.platformDescription || 'FOLIO platform',
+    iconData: {
+      src: homeIcon,
+      alt: 'FOLIO',
+    },
   };
 
-  const { displayName, iconData, name, home, route } = actualCurrentApp;
+  const { displayName, iconData, module, home, route } = actualCurrentApp;
   const href = home || route;
   const ariaLabel = href ? intl.formatMessage({ id: 'stripes-core.mainnav.currentAppAriaLabel' }, { appName: displayName }) : displayName;
 
@@ -57,7 +62,7 @@ const CurrentApp = ({ config, currentApp, id, intl, badge }) => {
       id={id}
       ariaLabel={ariaLabel}
       badge={badge}
-      iconKey={name}
+      iconKey={module}
       className={css.button}
       innerClassName={css.button__inner}
       labelClassName={css.button__label}
