@@ -116,15 +116,6 @@ class RootWithIntl extends React.Component {
                                     component={<Settings stripes={stripes} />}
                                   />
                                   {getModuleRoutes(stripes)}
-                                  <TitledRoute
-                                    name="notFound"
-                                    component={(
-                                      <div>
-                                        <h2>Uh-oh!</h2>
-                                        <p>This route does not exist.</p>
-                                      </div>
-                                    )}
-                                  />
                                 </Switch>
                               </ModuleContainer>
                             )}
