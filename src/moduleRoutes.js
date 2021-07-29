@@ -25,6 +25,17 @@ function getModuleRoutes(stripes) {
           throw new Error('At least one module of type "app" must be enabled.');
         }
 
+        const isValidRoute = modules.app.some(module => window.location.href.includes(`${module.route}`));
+
+        if (!isValidRoute) {
+          return (
+            <TitledRoute
+              name="notFound"
+              component={<BadRequestScreen />}
+            />
+          );
+        }
+
         return (
           <>
             {modules.app.map((module) => {
@@ -81,11 +92,8 @@ function getModuleRoutes(stripes) {
                 />
               );
             }).filter(x => x)}
-            <TitledRoute
-              name="notFound"
-              component={<BadRequestScreen />}
-            />
-        </>)
+          </>
+        );
       }}
     </ModulesContext.Consumer>
   );
