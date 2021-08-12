@@ -12,7 +12,7 @@ import { HotKeys } from '@folio/stripes-components/lib/HotKeys';
 import { connectFor } from '@folio/stripes-connect';
 import { Callout } from '@folio/stripes-components';
 
-import getModuleRoutes from './moduleRoutes';
+import ModuleRoutes from './moduleRoutes';
 import events from './events';
 
 import {
@@ -115,7 +115,7 @@ class RootWithIntl extends React.Component {
                                     path="/settings"
                                     component={<Settings stripes={stripes} />}
                                   />
-                                  {getModuleRoutes(stripes)}
+                                  <ModuleRoutes stripes={stripes} />
                                 </Switch>
                               </ModuleContainer>
                             )}

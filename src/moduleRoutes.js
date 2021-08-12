@@ -1,5 +1,7 @@
 import React from 'react';
 import { Route } from 'react-router-dom';
+import { useLocation } from 'react-router';
+import PropTypes from 'prop-types';
 
 import { connectFor } from '@folio/stripes-connect';
 
@@ -17,7 +19,18 @@ import {
 } from './components';
 import events from './events';
 
-function getModuleRoutes(stripes) {
+const propTypes = {
+  stripes: PropTypes.shape({
+    clone: PropTypes.func.isRequired,
+    epics: PropTypes.object,
+    hasPerm: PropTypes.func.isRequired,
+    logger: PropTypes.object.isRequired,
+  }).isRequired,
+};
+
+function ModuleRoutes({ stripes }) {
+  const location = useLocation();
+
   return (
     <ModulesContext.Consumer>
       {(modules) => {
@@ -25,7 +38,7 @@ function getModuleRoutes(stripes) {
           throw new Error('At least one module of type "app" must be enabled.');
         }
 
-        const isValidRoute = modules.app.some(module => window.location.href.includes(`${module.route}`));
+        const isValidRoute = modules.app.some(module => location.pathname.startsWith(`${module.route}`));
 
         if (!isValidRoute) {
           return (
@@ -99,7 +112,9 @@ function getModuleRoutes(stripes) {
   );
 }
 
-export default getModuleRoutes;
+ModuleRoutes.propTypes = propTypes;
+
+export default ModuleRoutes;
 
 // this might be handy at some point:
 //
