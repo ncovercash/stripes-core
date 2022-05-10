@@ -134,5 +134,9 @@
     "mainnav.profileDropdown.locale": "Idioma",
     "mainnav.profileDropdown.permissions": "Permissões",
     "front.error.header": "Erro 404",
-    "front.error.message": "O URL solicitado {br}{url}{br} não foi encontrado neste servidor."
+    "errors.password.compromised.invalid": "A senha não deve ser comumente usada, esperada ou comprometida",
+    "createResetPassword.ruleTemplate": "Deve {description}",
+    "front.error.general.message": "A URL solicitada {br}{url}{br} não foi encontrada neste servidor.",
+    "front.error.setPassword.message": "Por favor, saia de sua sessão atual do FOLIO para definir a senha. Uma vez desconectado, tente definir sua senha com este link novamente.",
+    "front.error.noPermission": "Você não tem permissão para ver este aplicativo/registro"
 }

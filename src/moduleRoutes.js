@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { Suspense } from 'react';
 import { Route } from 'react-router-dom';
 import { useLocation } from 'react-router';
 import PropTypes from 'prop-types';
 
 import { connectFor } from '@folio/stripes-connect';
+import { LoadingView } from '@folio/stripes-components';
 
 import { ModulesContext } from './ModulesContext';
 import { StripesContext } from './StripesContext';
@@ -15,6 +16,7 @@ import { packageName } from './constants';
 import {
   BadRequestScreen,
   ModuleHierarchyProvider,
+  ResetPasswordNotAvailableScreen,
   TitledRoute,
 } from './components';
 import events from './events';
@@ -41,16 +43,25 @@ function ModuleRoutes({ stripes }) {
         const isValidRoute = modules.app.some(module => location.pathname.startsWith(`${module.route}`));
 
         if (!isValidRoute) {
-          return (
-            <TitledRoute
-              name="notFound"
-              component={<BadRequestScreen />}
-            />
-          );
+          const isResetPasswordRoute = location.pathname.startsWith('/reset-password');
+
+          return isResetPasswordRoute
+            ? (
+              <TitledRoute
+                name="notFound"
+                component={<ResetPasswordNotAvailableScreen />}
+              />
+            )
+            : (
+              <TitledRoute
+                name="notFound"
+                component={<BadRequestScreen />}
+              />
+            );
         }
 
         return (
-          <>
+          <Suspense fallback={<LoadingView />}>
             {modules.app.map((module) => {
               const name = module.module.replace(packageName.PACKAGE_SCOPE_REGEX, '');
               const displayName = module.displayName;
@@ -105,7 +116,7 @@ function ModuleRoutes({ stripes }) {
                 />
               );
             }).filter(x => x)}
-          </>
+          </Suspense>
         );
       }}
     </ModulesContext.Consumer>
