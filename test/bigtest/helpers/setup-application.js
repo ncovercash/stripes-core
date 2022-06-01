@@ -2,6 +2,7 @@ import { beforeEach } from '@bigtest/mocha';
 import { setupAppForTesting, visit, location } from '@bigtest/react';
 import localforage from 'localforage';
 import { reset } from '@folio/stripes-connect';
+import * as defaultConfig from 'stripes-config';
 
 // load these styles for our tests
 import '@folio/stripes-components/lib/global.css';
@@ -21,6 +22,40 @@ import {
 
 const { assign } = Object;
 
+// const baseConfig = {
+//   "okapi": {
+//       "url": "http://localhost:9130",
+//       "tenant": "diku"
+//   },
+//   "config": {
+//       "logCategories": "core,path,action,xhr",
+//       "logPrefix": "--",
+//       "showPerms": false,
+//       "hasAllPerms": true,
+//       "languages": [
+//           "en"
+//       ]
+//   },
+//   "modules": {
+//       "app": []
+//   },
+//   "branding": {
+//       "logo": {
+//           "src": "http://localhost:9876/absoluteC:/Users/JCoburn/AppData/Local/Temp/_karma_webpack_458856/dac39e3c6f7847571b4f53924e6f7ed4.svg",
+//           "alt": "FOLIO"
+//       },
+//       "favicon": {
+//           "src": "http://localhost:9876/absoluteC:/Users/JCoburn/AppData/Local/Temp/_karma_webpack_458856/263e09c855f69ec7ec8ebaa498f9a4e5.svg"
+//       }
+//   },
+//   "errorLogging": {},
+//   "translations": {
+//       "en": "./absoluteC:\\Users\\JCoburn\\AppData\\Local\\Temp\\_karma_webpack_458856/translations/en-1654092551753.json"
+//   },
+//   "metadata": {},
+//   "icons": {}
+// }
+
 export default function setupApplication({
   disableAuth = true,
   modules = [],
@@ -35,6 +70,40 @@ export default function setupApplication({
   cookies = {},
 } = {}) {
   beforeEach(async function () {
+    // construct/override default config...
+    // this config will be passed to App as a prop...
+
+    // reshape modules to conform to what the app wants...
+    const configModules = {};
+    const moduleTypes = new Set();
+    modules.forEach((m) => moduleTypes.add(m.type));
+    moduleTypes.forEach((t) => {
+      if (!configModules[t]) {
+        configModules[t] = [];
+      }
+      modules.forEach((m) => {
+        if (m.type === t) {
+          const { module: getModule, name: module, ...rest } = m;
+          const resModule = {
+            fullName: undefined,
+            getModule,
+            module,
+            ...rest,
+          };
+
+          configModules[t].push(resModule);
+        }
+      });
+    });
+
+    const stripesTestConfig = {
+      ...defaultConfig,
+      configModules,
+      translations,
+      ...stripesConfig,
+      hasAllPerms: true,
+    };
+
     // when auth is disabled, add a fake user to the store
     if (disableAuth) {
       initialState.okapi = {
@@ -58,7 +127,8 @@ export default function setupApplication({
 
       props: {
         initialState,
-        defaultTranslations: translations
+        defaultTranslations: translations,
+        config: stripesTestConfig
       },
 
       setup: () => {
@@ -75,7 +145,7 @@ export default function setupApplication({
 
         setCookies(cookies);
         withModules(modules);
-        withConfig({ logCategories: '', ...stripesConfig });
+        withConfig({ logCategories: '', ...stripesTestConfig });
       },
 
       teardown: () => {

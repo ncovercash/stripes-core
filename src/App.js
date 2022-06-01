@@ -15,7 +15,8 @@ import Root from './components/Root';
 export default class StripesCore extends Component {
   static propTypes = {
     history: PropTypes.object,
-    initialState: PropTypes.object
+    initialState: PropTypes.object,
+    config: PropTypes.object,
   };
 
   constructor(props) {
@@ -41,16 +42,17 @@ export default class StripesCore extends Component {
   render() {
     // no need to pass along `initialState`
     // eslint-disable-next-line no-unused-vars
-    const { initialState, ...props } = this.props;
+    const { initialState, config: configProp, ...props } = this.props;
 
+    const finalConfig = configProp || config;
     return (
       <Root
         store={this.store}
         epics={this.epics}
         logger={this.logger}
-        config={config}
+        config={finalConfig}
         actionNames={this.actionNames}
-        disableAuth={(config && config.disableAuth) || false}
+        disableAuth={(finalConfig && finalConfig.disableAuth) || false}
         {...props}
       />
     );
