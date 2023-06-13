@@ -1,5 +1,9 @@
 # Change history for stripes-core
 
+## 10.0.0
+
+* *BREAKING*: Upgrade `react` to `v18`.
+
 ## 9.1.0 IN PROGRESS
 
 * Close app-context menu when its wrapper is undefined, which it will be when switching among apps. Fixes STCOR-680.
