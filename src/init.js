@@ -1,10 +1,12 @@
 import 'core-js/stable';
 import 'regenerator-runtime/runtime';
-import React from 'react';
-import { render } from 'react-dom';
+import { createRoot } from 'react-dom/client';
 
 import App from './App';
 
+const container = document.getElementById('root');
+const root = createRoot(container);
+
 export default function init() {
-  render(<App />, document.getElementById('root'));
+  root.render(<App />);
 }
