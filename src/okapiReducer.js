@@ -41,8 +41,33 @@ export default function okapiReducer(state = {}, action) {
     case 'UPDATE_CURRENT_USER':
       return { ...state, currentUser: { ...state.currentUser, ...action.data } };
 
-    case 'ADD_ICON':
-      return { ...state, icons: { ...state.icons, [action.key]: action.icon } };
+    /**
+     * state.icons looks like
+     * {
+     *   "@folio/some-app": {
+     *     app: { alt, src},
+     *     otherIcon: { alt, src }
+     *   },
+     *   "@folio/other-app": { app: ...}
+     * }
+     *
+     * action.key looks like @folio/some-app or @folio/other-app
+     * action.icon looks like { alt: ... } or { otherIcon: ... }
+     */
+    case 'ADD_ICON': {
+      let val = action.icon;
+
+      // if there are already icons defined for this key,
+      // add this payload to them
+      if (state.icons?.[action.key]) {
+        val = {
+          ...state.icons[action.key],
+          ...action.icon,
+        };
+      }
+
+      return { ...state, icons: { ...state.icons, [action.key]: val } };
+    }
 
     default:
       return state;
